@@ -1,3 +1,6 @@
+
+![Calculator](images/calculator.png)
+
 # 🧮 Calculator
 
 A fully functional browser-based calculator built with **HTML5, CSS3, and Vanilla JavaScript**. This project provides a clean and user-friendly interface for performing basic arithmetic operations with proper input handling and error management.
@@ -199,7 +202,6 @@ Screenshots of the completed project can be added below.
 ### Calculator Interface
 
 ![Calculator](images/calculator.png)
-
 
 ---
 
