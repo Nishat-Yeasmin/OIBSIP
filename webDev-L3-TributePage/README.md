@@ -59,7 +59,7 @@ WebDev-L2-TributePage/
     ├── hero-section.png
     ├── timeline.png
     ├── legacy.png
-    └── qoute.png
+    
 ```
 
 ### File Description
@@ -169,10 +169,6 @@ The timeline cards change their column layout on smaller screens to maintain rea
 ### Biography & Timeline
 
 ![Biography and Timeline](images/timeline.png)
-
-### Quote Section
-
-![Quote](images/qoute.png)
 
 ### Legacy Section
 
