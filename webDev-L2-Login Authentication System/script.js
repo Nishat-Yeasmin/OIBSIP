@@ -45,6 +45,11 @@ if (registerForm) {
         const password =
             document.getElementById("registerPassword").value;
 
+            
+const confirmPassword =
+    document.getElementById("registerConfirmPassword").value;
+
+
         const errorMessage =
             document.getElementById("registerError");
 
@@ -56,11 +61,12 @@ if (registerForm) {
 
 
         // Empty field validation
-        if (!username || !email || !password) {
-            errorMessage.textContent =
-                "Please fill in all fields.";
-            return;
-        }
+       
+if (!username || !email || !password || !confirmPassword) {
+    errorMessage.textContent = "Please fill in all fields.";
+    return;
+}
+
 
 
         // Password validation
@@ -75,6 +81,12 @@ if (registerForm) {
                 "Password must contain at least one number.";
             return;
         }
+
+
+if (password !== confirmPassword) {
+    errorMessage.textContent = "Passwords do not match.";
+    return;
+}
 
 
         // Get existing users
