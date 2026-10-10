@@ -20,7 +20,8 @@ const equalsButton = document.querySelector('[data-action="equals"]');
 let firstNumber = null;
 let currentNumber = "";
 let operator = null;
-
+let expression = "";
+let lastExpression = "";
 let shouldResetDisplay = false;
 
 
@@ -111,18 +112,13 @@ function enterNumber(number) {
 // Choose Operator
 // ================================
 
+
 function chooseOperator(selectedOperator) {
 
-    // Don't allow operator without number
     if (currentNumber === "" && firstNumber === null) {
-
         return;
-
     }
 
-
-    // If an operator already exists,
-    // calculate previous operation first.
     if (firstNumber !== null && currentNumber !== "") {
 
         const secondNumber = parseFloat(currentNumber);
@@ -139,22 +135,24 @@ function chooseOperator(selectedOperator) {
 
     }
 
-
     operator = selectedOperator;
+
+    expression =
+        `${formatNumber(firstNumber)} ${getOperatorSymbol(operator)}`;
 
     currentNumber = "";
 
     shouldResetDisplay = false;
 
-
     updateDisplay();
-
 }
 
 
 // ================================
 // Equals Button
 // ================================
+
+
 
 equalsButton.addEventListener("click", () => {
 
@@ -163,14 +161,14 @@ equalsButton.addEventListener("click", () => {
         currentNumber === "" ||
         operator === null
     ) {
-
         return;
-
     }
-
 
     const secondNumber = parseFloat(currentNumber);
 
+    // Save the complete expression before calculation
+    lastExpression =
+        `${formatNumber(firstNumber)} ${getOperatorSymbol(operator)} ${formatNumber(secondNumber)}`;
 
     const finalResult = calculate(
         firstNumber,
@@ -178,35 +176,27 @@ equalsButton.addEventListener("click", () => {
         operator
     );
 
-
-    // Check for error
+    // Handle division by zero or calculation errors
     if (finalResult === "Error") {
 
+        currentInput.textContent = lastExpression;
         resultDisplay.textContent = "Error";
-
-        currentInput.textContent = "Cannot divide by zero";
 
         firstNumber = null;
         currentNumber = "";
         operator = null;
-
+        expression = lastExpression;
         shouldResetDisplay = true;
 
         return;
-
     }
 
-
+    // Show expression above and answer below
+    currentInput.textContent = lastExpression;
     resultDisplay.textContent = formatNumber(finalResult);
 
-    currentInput.textContent =
-        `${firstNumber} ${getOperatorSymbol(operator)} ${secondNumber}`;
-
-
     firstNumber = finalResult;
-
     currentNumber = String(finalResult);
-
     operator = null;
 
     shouldResetDisplay = true;
@@ -250,30 +240,49 @@ function clearCalculator() {
 // Delete / Backspace
 // ================================
 
+
+
+
 deleteButton.addEventListener("click", () => {
 
+    // After equals, start deleting from the expression
     if (shouldResetDisplay) {
 
-        clearCalculator();
+        const shortenedExpression = lastExpression
+            .replace(/\s/g, "")
+            .slice(0, -1);
 
+        currentInput.textContent = "";
+        resultDisplay.textContent = shortenedExpression || "0";
+
+        firstNumber = null;
+        currentNumber = shortenedExpression;
+        operator = null;
+        expression = shortenedExpression;
+        lastExpression = "";
+        shouldResetDisplay = false;
+
+        return;
+    }
+
+    // Delete one character at a time
+    if (currentNumber !== "") {
+
+        currentNumber = currentNumber.slice(0, -1);
+
+    } else if (expression !== "") {
+
+        expression = expression.slice(0, -1);
+        resultDisplay.textContent = expression || "0";
         return;
 
     }
 
-
-    currentNumber = currentNumber.slice(0, -1);
-
-
-    if (currentNumber === "") {
-
-        resultDisplay.textContent = "0";
-
-    }
-
-
     updateDisplay();
 
 });
+
+
 
 
 // ================================
@@ -323,29 +332,32 @@ function calculate(first, second, selectedOperator) {
 // Update Display
 // ================================
 
+
 function updateDisplay() {
 
-    if (currentNumber === "") {
-
-        resultDisplay.textContent = "0";
-
-    } else {
-
-        resultDisplay.textContent = currentNumber;
-
-    }
-
-
+    // Show the full expression below while typing
     if (firstNumber !== null && operator !== null) {
 
-        currentInput.textContent =
-            `${formatNumber(firstNumber)} ${getOperatorSymbol(operator)}`;
+        if (currentNumber !== "") {
+
+            resultDisplay.textContent =
+                `${formatNumber(firstNumber)} ${getOperatorSymbol(operator)} ${currentNumber}`;
+
+        } else {
+
+            resultDisplay.textContent = expression;
+
+        }
 
     } else {
 
-        currentInput.textContent = "";
+        resultDisplay.textContent =
+            currentNumber !== "" ? currentNumber : "0";
 
     }
+
+    // Keep the upper display empty until equals is pressed
+    currentInput.textContent = "";
 
 }
 
